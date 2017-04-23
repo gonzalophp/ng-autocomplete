@@ -1,3 +1,7 @@
 <h1>
   {{title}}
 </h1>
+aa{{currentValue}}bb
+<h2>
+  <ng-autocomplete [value]="currentValue" [itemList]="states" [filterCallback]="filterStates"></ng-autocomplete>
+</h2>
