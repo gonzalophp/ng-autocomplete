@@ -2,14 +2,15 @@
 
 <div class="container">
     <input #searchText
-           [value]="value"
-           (change)="onChange($event)"
-           (keydown)="onKeyDown($event)"
-           (keyup)="onKeyUp(searchText.value)"/>
+       [value]="value"
+       (change)="onChange($event)"
+       (keydown)="onKeyDown($event)"
+       (keyup)="onKeyUp($event)"
+       placeholder="type state"/>
     <div class="list">
         <ul>
             <ng-template ngFor let-item let-i="index" [ngForOf]="itemList">
-                <li [ngClass]="{'highlighted':isHighlighted(i)}">{{item}}{{i}}</li>
+                <li [ngClass]="{'highlighted':isHighlighted(i)}">{{item}}</li>
             </ng-template>
         </ul>
     </div>

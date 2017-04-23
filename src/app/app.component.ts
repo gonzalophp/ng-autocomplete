@@ -60,15 +60,10 @@ export class AppComponent {
     'Wyoming',
   ];
 
-    currentValue= 'qqqqqqqqq';
+    currentValue= '';
 
   filterStates(val,initialList) {
-    console.log('EN FILTER CALLBACK', val, this.currentValue);
-    // return this.states;
-
-    let a = val ? initialList.filter(s => new RegExp(`${val}`, 'gi').test(s)) : initialList;
-    console.log('GGGG',a,'aaa',initialList);
-    return a;
+    return val ? initialList.filter(s => new RegExp(`${val}`, 'gi').test(s)) : initialList;
   };
 
 }
