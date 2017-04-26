@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'ng-autocomplete',
+  selector: 'app-autocomplete',
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.css']
 })
@@ -20,26 +20,38 @@ export class AutocompleteComponent implements OnInit {
   constructor() {}
 
   onKeyDown(event) {
-    let filteredList = this.filterCallback(event.target.value, this.settings.initialList);
 
-    if (event.key === 'ArrowDown') {
-        (this.settings.selectedIndex >= (filteredList.length-1)) ? this.settings.selectedIndex=0 : this.settings.selectedIndex++;
-    } else if (event.key === 'ArrowUp') {
-        (this.settings.selectedIndex > 0) ? this.settings.selectedIndex-- : this.settings.selectedIndex=filteredList.length-1;
+  }
+
+  updateDropDown(event) {
+
+    const inputTextValue = (event) ? event.target.value : this.value;
+
+    const filteredList = this.filterCallback(inputTextValue, this.settings.initialList);
+
+    if (event) {
+      if (event.key === 'ArrowDown') {
+        (this.settings.selectedIndex >= (filteredList.length - 1)) ? this.settings.selectedIndex = 0 : this.settings.selectedIndex++;
+      } else if (event.key === 'ArrowUp') {
+        (this.settings.selectedIndex > 0) ? this.settings.selectedIndex--
+            : this.settings.selectedIndex = filteredList.length - 1;
+      }
     }
 
-    this.settings.frameStart = ((this.settings.selectedIndex-this.settings.itemsDisplayed) >= 0) ? this.settings.selectedIndex-this.settings.itemsDisplayed+1 : 0;
+    this.settings.frameStart = ((this.settings.selectedIndex - this.settings.itemsDisplayed) >= 0) ?
+        this.settings.selectedIndex - this.settings.itemsDisplayed + 1 : 0;
 
-    let displayedList = filteredList.slice(
+    const displayedList = filteredList.slice(
         this.settings.frameStart,
-        this.settings.itemsDisplayed+this.settings.frameStart);
+        this.settings.itemsDisplayed + this.settings.frameStart);
     this.itemList = displayedList;
-    console.log(event);
+
+    console.log('XXXXXXX', inputTextValue, this.itemList, filteredList);
   }
 
     onKeyUp(event) {
-
-        console.log('ddddddddd',this.settings.selectedIndex,this.settings.frameStart);
+      this.updateDropDown(event);
+      console.log('aaaaaaaaaaaaaaa', this.value);
     }
 
   onChange(event) {
@@ -47,9 +59,7 @@ export class AutocompleteComponent implements OnInit {
 
   ngOnInit() {
     this.settings.initialList = this.itemList;
-      this.itemList = this.settings.initialList.slice(
-          0,
-          this.settings.itemsDisplayed);
+    this.updateDropDown(null);
   }
 
   isHighlighted(i) {
