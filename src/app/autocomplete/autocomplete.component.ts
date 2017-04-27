@@ -32,21 +32,25 @@ export class AutocompleteComponent implements OnInit {
     if (event) {
       if (event.key === 'ArrowDown') {
         (this.settings.selectedIndex >= (filteredList.length - 1)) ? this.settings.selectedIndex = 0 : this.settings.selectedIndex++;
+        this.settings.frameStart = ((this.settings.selectedIndex - this.settings.itemsDisplayed) >= 0) ?
+          this.settings.selectedIndex - this.settings.itemsDisplayed + 1 : 0;
       } else if (event.key === 'ArrowUp') {
         (this.settings.selectedIndex > 0) ? this.settings.selectedIndex--
             : this.settings.selectedIndex = filteredList.length - 1;
+        this.settings.frameStart = ((this.settings.selectedIndex - this.settings.frameStart ) >= 0) ?
+          this.settings.frameStart : this.settings.selectedIndex;
+      } else {
+          this.settings.selectedIndex = 0;
       }
     }
-
-    this.settings.frameStart = ((this.settings.selectedIndex - this.settings.itemsDisplayed) >= 0) ?
-        this.settings.selectedIndex - this.settings.itemsDisplayed + 1 : 0;
 
     const displayedList = filteredList.slice(
         this.settings.frameStart,
         this.settings.itemsDisplayed + this.settings.frameStart);
     this.itemList = displayedList;
 
-    console.log('XXXXXXX', inputTextValue, this.itemList, filteredList);
+    console.log('XXXXXXX', inputTextValue,
+        filteredList.length, this.settings.selectedIndex, this.settings.frameStart);
   }
 
     onKeyUp(event) {
