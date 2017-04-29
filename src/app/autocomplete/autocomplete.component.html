@@ -9,7 +9,7 @@
        placeholder="type state"/>
     <div class="list">
         <ul>
-            <ng-template ngFor let-item let-i="index" [ngForOf]="settings.displayedList">
+            <ng-template ngFor let-item let-i="index" [ngForOf]="displayedList">
                 <li [ngClass]="{'highlighted':isHighlighted(i)}">{{item}}</li>
             </ng-template>
         </ul>

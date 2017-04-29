@@ -10,44 +10,43 @@ export class AutocompleteComponent implements OnInit {
   @Input() itemList;
   @Input() filterCallback;
   @Input() value;
+  private frameStart = 0;
+  private filteredList = [];
+  private displayedList = [];
+  private selectedIndex = 0;
   settings = {
-    selectedIndex: 0,
-    frameStart: 0,
-    itemsDisplayed: 4,
-      filteredList: [],
-      displayedList: []
-  }
+    itemsDisplayed: 4
+  };
 
   constructor() {}
 
   onKeyDown(event) {
 
       if (event) {
-          console.log('FFFFFFFFF', this.settings.filteredList, this.settings.selectedIndex);
           if (event.key === 'ArrowUp') {
-              console.log('UP 1', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
-              if (this.settings.selectedIndex > 0) {
-                  this.settings.selectedIndex--;
+              console.log('UP 1', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
+              if (this.selectedIndex > 0) {
+                  this.selectedIndex--;
               }
 
-              if ((this.settings.selectedIndex - this.settings.frameStart ) < 0) {
-                  this.settings.frameStart = this.settings.selectedIndex;
+              if ((this.selectedIndex - this.frameStart ) < 0) {
+                  this.frameStart = this.selectedIndex;
                   this.updateDisplayedList();
               }
-              console.log('UP 2', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+              console.log('UP 2', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
           } else if (event.key === 'ArrowDown') {
-              console.log('DOWN 1', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
-              if (this.settings.selectedIndex < (this.settings.filteredList.length - 1)) {
-                  this.settings.selectedIndex++;
+              console.log('DOWN 1', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
+              if (this.selectedIndex < (this.filteredList.length - 1)) {
+                  this.selectedIndex++;
               }
 
-              if (this.settings.selectedIndex >= (this.settings.frameStart + this.settings.itemsDisplayed)) {
-                  this.settings.frameStart = this.settings.selectedIndex - this.settings.itemsDisplayed + 1;
+              if (this.selectedIndex >= (this.frameStart + this.settings.itemsDisplayed)) {
+                  this.frameStart = this.selectedIndex - this.settings.itemsDisplayed + 1;
                   this.updateDisplayedList();
               }
-              console.log('DOWN 2', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+              console.log('DOWN 2', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
           } else {
-              this.settings.selectedIndex = 0;
+              this.selectedIndex = 0;
           }
       }
   }
@@ -60,13 +59,13 @@ export class AutocompleteComponent implements OnInit {
     }
 
     updateDisplayedList() {
-        this.settings.displayedList = this.settings.filteredList.slice(
-            this.settings.frameStart,
-            this.settings.itemsDisplayed + this.settings.frameStart);
+        this.displayedList = this.filteredList.slice(
+            this.frameStart,
+            this.settings.itemsDisplayed + this.frameStart);
     }
 
     updateFilteredList() {
-      this.settings.filteredList = this.filterCallback(this.value, this.itemList);
+      this.filteredList = this.filterCallback(this.value, this.itemList);
     }
 
   onChange(event) {
@@ -78,6 +77,6 @@ export class AutocompleteComponent implements OnInit {
   }
 
   isHighlighted(i) {
-    return i === (this.settings.selectedIndex - this.settings.frameStart);
+    return i === (this.selectedIndex - this.frameStart);
   }
 }

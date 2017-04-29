@@ -62,7 +62,7 @@ export class AppComponent {
 
     currentValue= 'w';
 
-  filterStates(val,initialList) {
+  filterStates(val, initialList) {
     return val ? initialList.filter(s => new RegExp(`${val}`, 'gi').test(s)) : initialList;
   };
 
