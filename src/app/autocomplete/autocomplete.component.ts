@@ -11,62 +11,73 @@ export class AutocompleteComponent implements OnInit {
   @Input() filterCallback;
   @Input() value;
   settings = {
-    initialList: [],
     selectedIndex: 0,
     frameStart: 0,
-    itemsDisplayed: 4
+    itemsDisplayed: 4,
+      filteredList: [],
+      displayedList: []
   }
 
   constructor() {}
 
   onKeyDown(event) {
 
-  }
+      if (event) {
+          console.log('FFFFFFFFF', this.settings.filteredList, this.settings.selectedIndex);
+          if (event.key === 'ArrowUp') {
+              console.log('UP 1', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+              if (this.settings.selectedIndex > 0) {
+                  this.settings.selectedIndex--;
+              }
 
-  updateDropDown(event) {
+              if ((this.settings.selectedIndex - this.settings.frameStart ) < 0) {
+                  this.settings.frameStart = this.settings.selectedIndex;
+                  this.updateDisplayedList();
+              }
+              console.log('UP 2', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+          } else if (event.key === 'ArrowDown') {
+              console.log('DOWN 1', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+              if (this.settings.selectedIndex < (this.settings.filteredList.length - 1)) {
+                  this.settings.selectedIndex++;
+              }
 
-    const inputTextValue = (event) ? event.target.value : this.value;
-
-    const filteredList = this.filterCallback(inputTextValue, this.settings.initialList);
-
-    if (event) {
-      if (event.key === 'ArrowDown') {
-        (this.settings.selectedIndex >= (filteredList.length - 1)) ? this.settings.selectedIndex = 0 : this.settings.selectedIndex++;
-        this.settings.frameStart = ((this.settings.selectedIndex - this.settings.itemsDisplayed) >= 0) ?
-          this.settings.selectedIndex - this.settings.itemsDisplayed + 1 : 0;
-      } else if (event.key === 'ArrowUp') {
-        (this.settings.selectedIndex > 0) ? this.settings.selectedIndex--
-            : this.settings.selectedIndex = filteredList.length - 1;
-        this.settings.frameStart = ((this.settings.selectedIndex - this.settings.frameStart ) >= 0) ?
-          this.settings.frameStart : this.settings.selectedIndex;
-      } else {
-          this.settings.selectedIndex = 0;
+              if (this.settings.selectedIndex >= (this.settings.frameStart + this.settings.itemsDisplayed)) {
+                  this.settings.frameStart = this.settings.selectedIndex - this.settings.itemsDisplayed + 1;
+                  this.updateDisplayedList();
+              }
+              console.log('DOWN 2', this.settings.selectedIndex, this.settings.frameStart, this.settings.itemsDisplayed);
+          } else {
+              this.settings.selectedIndex = 0;
+          }
       }
-    }
-
-    const displayedList = filteredList.slice(
-        this.settings.frameStart,
-        this.settings.itemsDisplayed + this.settings.frameStart);
-    this.itemList = displayedList;
-
-    console.log('XXXXXXX', inputTextValue,
-        filteredList.length, this.settings.selectedIndex, this.settings.frameStart);
   }
 
     onKeyUp(event) {
-      this.updateDropDown(event);
-      console.log('aaaaaaaaaaaaaaa', this.value);
+        if (event && ! ((event.key === 'ArrowDown') || (event.key === 'ArrowUp'))) {
+            this.updateFilteredList();
+            this.updateDisplayedList();
+        }
+    }
+
+    updateDisplayedList() {
+        this.settings.displayedList = this.settings.filteredList.slice(
+            this.settings.frameStart,
+            this.settings.itemsDisplayed + this.settings.frameStart);
+    }
+
+    updateFilteredList() {
+      this.settings.filteredList = this.filterCallback(this.value, this.itemList);
     }
 
   onChange(event) {
   }
 
   ngOnInit() {
-    this.settings.initialList = this.itemList;
-    this.updateDropDown(null);
+    this.updateFilteredList();
+      this.updateDisplayedList();
   }
 
   isHighlighted(i) {
-    return i === (this.settings.selectedIndex-this.settings.frameStart);
+    return i === (this.settings.selectedIndex - this.settings.frameStart);
   }
 }
