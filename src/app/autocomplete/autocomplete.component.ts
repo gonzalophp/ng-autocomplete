@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-autocomplete',
@@ -17,8 +18,24 @@ export class AutocompleteComponent implements OnInit {
   settings = {
     itemsDisplayed: 4
   };
+  private valueObservable: Subject<string>;
 
-  constructor() {}
+  constructor() {
+      this.valueObservable = new Subject<string>();
+  }
+
+  ngOnInit() {
+
+      this.valueObservable.distinctUntilChanged()
+      .subscribe(data => this.newInputValue());
+      this.valueObservable.next(this.value);
+  }
+
+  newInputValue() {
+      this.updateFilteredList();
+    this.updateDisplayedList();
+    this.selectedIndex = 0;
+  }
 
   onKeyDown(event) {
 
@@ -40,22 +57,24 @@ export class AutocompleteComponent implements OnInit {
                   this.selectedIndex++;
               }
 
-              if (this.selectedIndex >= (this.frameStart + this.settings.itemsDisplayed)) {
+              if ((this.selectedIndex - this.frameStart) > this.settings.itemsDisplayed - 1) {
                   this.frameStart = this.selectedIndex - this.settings.itemsDisplayed + 1;
                   this.updateDisplayedList();
               }
               console.log('DOWN 2', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
-          } else {
-              this.selectedIndex = 0;
           }
       }
   }
 
+  
+
     onKeyUp(event) {
-        if (event && ! ((event.key === 'ArrowDown') || (event.key === 'ArrowUp'))) {
-            this.updateFilteredList();
-            this.updateDisplayedList();
-        }
+        this.valueObservable.next(this.value);
+        // if (event && ! ((event.key === 'ArrowDown') || (event.key === 'ArrowUp'))) {
+        //     this.updateFilteredList();
+        //     this.updateDisplayedList();
+        //     this.selectedIndex = 0;
+        // }
     }
 
     updateDisplayedList() {
@@ -69,11 +88,7 @@ export class AutocompleteComponent implements OnInit {
     }
 
   onChange(event) {
-  }
-
-  ngOnInit() {
-    this.updateFilteredList();
-      this.updateDisplayedList();
+      
   }
 
   isHighlighted(i) {
