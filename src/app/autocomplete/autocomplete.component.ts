@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 import {Subject} from 'rxjs/Rx';
 
 @Component({
@@ -8,9 +8,9 @@ import {Subject} from 'rxjs/Rx';
 })
 export class AutocompleteComponent implements OnInit {
 
-  @Input() itemList;
   @Input() filterCallback;
   @Input() value;
+
   private frameStart = 0;
   private filteredList = [];
   private displayedList = [];
@@ -79,7 +79,7 @@ export class AutocompleteComponent implements OnInit {
     }
 
     updateFilteredList() {
-      this.filteredList = this.filterCallback(this.value, this.itemList);
+      this.filteredList = this.filterCallback(this.value);
     }
 
   isHighlighted(i) {
