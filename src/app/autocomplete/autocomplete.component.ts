@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BehaviorSubject} from 'rxjs/Rx';
+import {Subject} from 'rxjs/Rx';
 
 @Component({
   selector: 'app-autocomplete',
@@ -19,23 +19,24 @@ export class AutocompleteComponent implements OnInit {
     itemsDisplayed: 4,
     filterDelay: 1000
   };
-  private valueBehaviourSubject: BehaviorSubject<string>;
+  private valueBehaviourSubject: Subject<string>;
 
   constructor() {}
 
   ngOnInit() {
-    this.valueBehaviourSubject = new BehaviorSubject<string>(this.value);
+    this.valueBehaviourSubject = new Subject<string>();
 
     this.valueBehaviourSubject
       .distinctUntilChanged()
       .debounceTime(this.settings.filterDelay).skip(1)
       .subscribe(data => this.newInputValue());
+      this.valueBehaviourSubject.next(this.value);
+      this.valueBehaviourSubject.skip(1);
 
     this.newInputValue();
   }
 
   newInputValue() {
-      console.log('ddddd');
     this.updateFilteredList();
     this.selectedIndex = 0;
     this.frameStart = 0;
@@ -46,7 +47,6 @@ export class AutocompleteComponent implements OnInit {
 
       if (event) {
           if (event.key === 'ArrowUp') {
-              console.log('UP 1', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
               if (this.selectedIndex > 0) {
                   this.selectedIndex--;
               }
@@ -55,9 +55,7 @@ export class AutocompleteComponent implements OnInit {
                   this.frameStart = this.selectedIndex;
                   this.updateDisplayedList();
               }
-              console.log('UP 2', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
           } else if (event.key === 'ArrowDown') {
-              console.log('DOWN 1', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
               if (this.selectedIndex < (this.filteredList.length - 1)) {
                   this.selectedIndex++;
               }
@@ -66,7 +64,6 @@ export class AutocompleteComponent implements OnInit {
                   this.frameStart = this.selectedIndex - this.settings.itemsDisplayed + 1;
                   this.updateDisplayedList();
               }
-              console.log('DOWN 2', this.selectedIndex, this.frameStart, this.settings.itemsDisplayed);
           }
       }
   }
@@ -84,8 +81,6 @@ export class AutocompleteComponent implements OnInit {
     updateFilteredList() {
       this.filteredList = this.filterCallback(this.value, this.itemList);
     }
-
-  onChange(event) {}
 
   isHighlighted(i) {
     return i === (this.selectedIndex - this.frameStart);

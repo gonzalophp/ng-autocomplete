@@ -1,9 +1,7 @@
 <p>autocomplete works!</p>
 
 <div class="container">
-    <input #searchText
-           [(ngModel)]="value"
-       (change)="onChange($event)"
+    <input [(ngModel)]="value"
        (keydown)="onKeyDown($event)"
        (keyup)="onKeyUp($event)"
        placeholder="type state"/>
