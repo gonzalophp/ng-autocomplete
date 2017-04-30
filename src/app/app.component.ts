@@ -60,7 +60,7 @@ export class AppComponent {
     'Wyoming',
   ];
 
-    currentValue= 'w';
+    currentValue= 'c';
 
   filterStates(val, initialList) {
     return val ? initialList.filter(s => new RegExp(`${val}`, 'gi').test(s)) : initialList;

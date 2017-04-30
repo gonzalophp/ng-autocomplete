@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Subject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs/Rx';
 
 @Component({
   selector: 'app-autocomplete',
@@ -15,26 +15,31 @@ export class AutocompleteComponent implements OnInit {
   private filteredList = [];
   private displayedList = [];
   private selectedIndex = 0;
-  settings = {
-    itemsDisplayed: 4
+  private settings = {
+    itemsDisplayed: 4,
+    filterDelay: 1000
   };
-  private valueObservable: Subject<string>;
+  private valueBehaviourSubject: BehaviorSubject<string>;
 
-  constructor() {
-      this.valueObservable = new Subject<string>();
-  }
+  constructor() {}
 
   ngOnInit() {
+    this.valueBehaviourSubject = new BehaviorSubject<string>(this.value);
 
-      this.valueObservable.distinctUntilChanged()
+    this.valueBehaviourSubject
+      .distinctUntilChanged()
+      .debounceTime(this.settings.filterDelay).skip(1)
       .subscribe(data => this.newInputValue());
-      this.valueObservable.next(this.value);
+
+    this.newInputValue();
   }
 
   newInputValue() {
-      this.updateFilteredList();
-    this.updateDisplayedList();
+      console.log('ddddd');
+    this.updateFilteredList();
     this.selectedIndex = 0;
+    this.frameStart = 0;
+    this.updateDisplayedList();
   }
 
   onKeyDown(event) {
@@ -66,15 +71,8 @@ export class AutocompleteComponent implements OnInit {
       }
   }
 
-  
-
     onKeyUp(event) {
-        this.valueObservable.next(this.value);
-        // if (event && ! ((event.key === 'ArrowDown') || (event.key === 'ArrowUp'))) {
-        //     this.updateFilteredList();
-        //     this.updateDisplayedList();
-        //     this.selectedIndex = 0;
-        // }
+        this.valueBehaviourSubject.next(this.value);
     }
 
     updateDisplayedList() {
@@ -87,9 +85,7 @@ export class AutocompleteComponent implements OnInit {
       this.filteredList = this.filterCallback(this.value, this.itemList);
     }
 
-  onChange(event) {
-      
-  }
+  onChange(event) {}
 
   isHighlighted(i) {
     return i === (this.selectedIndex - this.frameStart);
