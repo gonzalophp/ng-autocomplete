@@ -65,6 +65,8 @@ export class AutocompleteComponent implements OnInit {
                     this.frameStart = this.selectedIndex - this.settings.itemsDisplayed + 1;
                     this.updateDisplayedList();
                 }
+            } else if (event.key === 'Enter') {
+                this.itemClick(this.selectedIndex);
             }
         }
     }
@@ -89,5 +91,7 @@ export class AutocompleteComponent implements OnInit {
 
     itemClick(i) {
         this.selectedIndex = this.frameStart + i;
+        this.value = this.filteredList[this.selectedIndex];
+        this.valueSubject.next(this.value);
     }
 }
