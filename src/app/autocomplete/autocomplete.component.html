@@ -8,7 +8,7 @@
     <div class="list">
         <ul>
             <ng-template ngFor let-item let-i="index" [ngForOf]="displayedList">
-                <li [ngClass]="{'highlighted':isHighlighted(i)}">{{item}}</li>
+                <li [ngClass]="{'highlighted':isHighlighted(i)}" (click)="itemClick(i)">{{item}}</li>
             </ng-template>
         </ul>
     </div>

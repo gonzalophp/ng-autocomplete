@@ -86,4 +86,8 @@ export class AutocompleteComponent implements OnInit {
     isHighlighted(i) {
         return i === (this.selectedIndex - this.frameStart);
     }
+
+    itemClick(i) {
+        this.selectedIndex = this.frameStart + i;
+    }
 }

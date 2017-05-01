@@ -1,17 +1,30 @@
-*{
-    width:20em;
-    font-size: 1em;
+* {
+  width: 20em;
+  font-size: 1em;
+}
+
+input {
+  border-radius: 0.2em;
+  font-size: 1.2em;
+  width: 400px;
 }
 
 ul {
-    margin: 0;
-    padding: 0;
-    background-color: cornsilk;
+  margin: 0;
+  padding: 0;
+  background-color: beige;
+  width: 400px;
 }
+
 li {
-    list-style: none;
+  width: 400px;
+  list-style: none;
+}
+
+li:hover {
+    background-color: lightsteelblue
 }
 
 li.highlighted {
-    background-color: cadetblue;
+  background-color: cadetblue;
 }
