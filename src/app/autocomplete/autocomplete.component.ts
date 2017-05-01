@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs/Rx';
 
 @Component({
@@ -12,16 +12,16 @@ export class AutocompleteComponent implements OnInit {
     @Input() filterCallback;
     @Input() value;
 
-    private frameStart = 0;
+    @ViewChild('divList') divList;
+
     private filteredList = [];
-    private displayedList = [];
     private selectedIndex = 0;
     private settings = {
         itemsDisplayed: 4,
         filterDelay: 1000
     };
     private valueSubject: Subject<string>;
-
+private myStyleWidth;
     constructor() { }
 
     ngOnInit() {
@@ -40,8 +40,6 @@ export class AutocompleteComponent implements OnInit {
     newInputValue() {
         this.updateFilteredList();
         this.selectedIndex = 0;
-        this.frameStart = 0;
-        this.updateDisplayedList();
     }
 
     onKeyDown(event) {
@@ -51,19 +49,16 @@ export class AutocompleteComponent implements OnInit {
                 if (this.selectedIndex > 0) {
                     this.selectedIndex--;
                 }
-
-                if ((this.selectedIndex - this.frameStart) < 0) {
-                    this.frameStart = this.selectedIndex;
-                    this.updateDisplayedList();
-                }
             } else if (event.key === 'ArrowDown') {
                 if (this.selectedIndex < (this.filteredList.length - 1)) {
                     this.selectedIndex++;
-                }
-
-                if ((this.selectedIndex - this.frameStart) > this.settings.itemsDisplayed - 1) {
-                    this.frameStart = this.selectedIndex - this.settings.itemsDisplayed + 1;
-                    this.updateDisplayedList();
+                    // this.myStyleWidth = 500;
+                    // this.divList.offsetTop = 300;
+                    console.log(this.divList);
+                    if (this.selectedIndex > 3) {
+                        this.divList.nativeElement.scrollTop = (this.selectedIndex-3)*35;
+                    }
+                    
                 }
             } else if (event.key === 'Enter') {
                 this.itemClick(this.selectedIndex);
@@ -75,22 +70,15 @@ export class AutocompleteComponent implements OnInit {
         this.valueSubject.next(this.value);
     }
 
-    updateDisplayedList() {
-        this.displayedList = this.filteredList.slice(
-            this.frameStart,
-            this.settings.itemsDisplayed + this.frameStart);
-    }
-
     updateFilteredList() {
         this.filteredList = this.filterCallback(this.value);
     }
 
     isHighlighted(i) {
-        return i === (this.selectedIndex - this.frameStart);
+        return i === this.selectedIndex;
     }
 
     itemClick(i) {
-        this.selectedIndex = this.frameStart + i;
         this.value = this.filteredList[this.selectedIndex];
         this.valueSubject.next(this.value);
     }

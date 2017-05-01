@@ -5,9 +5,9 @@
        (keydown)="onKeyDown($event)"
        (keyup)="onKeyUp($event)"
        placeholder="type state"/>
-    <div class="list">
+    <div class="list" #divList [style.width.px]="myStyleWidth">
         <ul>
-            <ng-template ngFor let-item let-i="index" [ngForOf]="displayedList">
+            <ng-template ngFor let-item let-i="index" [ngForOf]="filteredList">
                 <li [ngClass]="{'highlighted':isHighlighted(i)}" (click)="itemClick(i)">{{item}}</li>
             </ng-template>
         </ul>

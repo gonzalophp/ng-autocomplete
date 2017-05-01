@@ -1,24 +1,27 @@
 * {
-  width: 20em;
   font-size: 1em;
 }
 
 input {
   border-radius: 0.2em;
-  font-size: 1.2em;
+  font-size: 1em;
   width: 400px;
 }
+div.list {
+  overflow-y: auto;
+  height: 140px;
+  width:400px;
+  }
 
 ul {
   margin: 0;
   padding: 0;
   background-color: beige;
-  width: 400px;
 }
 
 li {
-  width: 400px;
   list-style: none;
+  height:35px;
 }
 
 li:hover {
