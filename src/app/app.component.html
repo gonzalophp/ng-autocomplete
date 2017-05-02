@@ -3,5 +3,9 @@
 </h1>
 PARENT {{currentValue}}
 <h2>
-  <app-autocomplete [(value)]="currentValue" [filterCallback]="filterStates"></app-autocomplete>
+  <app-autocomplete 
+    [(value)]="currentValue" 
+    [filterCallback]="filterStates" 
+    [maxItemsDisplayed]="3">
+  </app-autocomplete>
 </h2>

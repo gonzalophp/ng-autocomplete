@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ViewChildren, ContentChildren, Renderer2 } from '@angular/core';
 import { Subject } from 'rxjs/Rx';
 
 @Component({
@@ -11,6 +11,7 @@ export class AutocompleteComponent implements OnInit {
 
     @Input() filterCallback;
     @Input() value;
+    @Input() maxItemsDisplayed;
 
     @ViewChild('divList') divList;
 
@@ -21,10 +22,21 @@ export class AutocompleteComponent implements OnInit {
         filterDelay: 1000
     };
     private valueSubject: Subject<string>;
-private myStyleWidth;
-    constructor() { }
+
+    private metadata = {
+        itemHeight: 0
+    }
+
+    constructor() {}
+
+    ngAfterViewInit() {
+        this.metadata.itemHeight = parseInt(window.getComputedStyle(this.divList.nativeElement.querySelector('li')).height, 10);
+        this.divList.nativeElement.style.height = (this.metadata.itemHeight * this.settings.itemsDisplayed) + 'px';
+    }
 
     ngOnInit() {
+        this.settings.itemsDisplayed = this.maxItemsDisplayed;
+
         this.valueSubject = new Subject<string>();
 
         this.valueSubject
@@ -49,16 +61,15 @@ private myStyleWidth;
                 if (this.selectedIndex > 0) {
                     this.selectedIndex--;
                 }
+                if (this.selectedIndex < (this.divList.nativeElement.scrollTop / this.metadata.itemHeight)) {
+                    this.divList.nativeElement.scrollTop = (this.selectedIndex) * this.metadata.itemHeight;
+                }
             } else if (event.key === 'ArrowDown') {
                 if (this.selectedIndex < (this.filteredList.length - 1)) {
                     this.selectedIndex++;
-                    // this.myStyleWidth = 500;
-                    // this.divList.offsetTop = 300;
-                    console.log(this.divList);
-                    if (this.selectedIndex > 3) {
-                        this.divList.nativeElement.scrollTop = (this.selectedIndex-3)*35;
+                    if (this.selectedIndex >= this.maxItemsDisplayed) {
+                        this.divList.nativeElement.scrollTop = (this.selectedIndex - this.maxItemsDisplayed + 1) * this.metadata.itemHeight;
                     }
-                    
                 }
             } else if (event.key === 'Enter') {
                 this.itemClick(this.selectedIndex);
