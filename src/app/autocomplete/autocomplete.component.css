@@ -1,16 +1,32 @@
-* {
+div.container {
   font-size: 1em;
 }
 
 input {
   border-radius: 0.2em;
   font-size: 1em;
-  width: 400px;
+  width: 16em;
+}
+div.textSelector {
+  display: table;
+}
+
+div.arrow {
+  float:right;
+  right: 1.2em;
+  top: .5em;
+  position: relative;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: .4em .4em 0 .4em;
+  border-color: #666666 transparent transparent transparent;
 }
 div.list {
   overflow-y: auto;
-  /*height: 140px;*/
-  width:400px;
+  overflow-x: hidden;
+  width: 16em;
+  display: none;
   }
 
 ul {
@@ -21,7 +37,9 @@ ul {
 
 li {
   list-style: none;
-  height:35px;
+  height:1.5em;
+  line-height: 1.5em;
+  width: 16em;
 }
 
 li:hover {

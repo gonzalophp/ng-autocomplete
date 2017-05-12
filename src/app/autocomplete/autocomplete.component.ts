@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ViewChildren, ContentChildren, Renderer2 } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ViewChildren, ContentChildren, Renderer2, AfterViewInit } from '@angular/core';
 import { Subject } from 'rxjs/Rx';
 
 @Component({
@@ -7,11 +7,12 @@ import { Subject } from 'rxjs/Rx';
     styleUrls: ['./autocomplete.component.css']
 })
 
-export class AutocompleteComponent implements OnInit {
+export class AutocompleteComponent implements OnInit, AfterViewInit {
 
     @Input() filterCallback;
     @Input() value;
     @Input() maxItemsDisplayed;
+    @Input() placeHolder;
 
     @ViewChild('divList') divList;
 
@@ -83,6 +84,9 @@ export class AutocompleteComponent implements OnInit {
 
     updateFilteredList() {
         this.filteredList = this.filterCallback(this.value);
+        if (this.filteredList.length > 0) {
+            this.divList.nativeElement.style.display = 'block';
+        }
     }
 
     isHighlighted(i) {

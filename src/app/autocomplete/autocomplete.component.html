@@ -1,10 +1,13 @@
 <p>CHILD {{value}}</p>
 
 <div class="container">
-    <input [(ngModel)]="value"
-       (keydown)="onKeyDown($event)"
-       (keyup)="onKeyUp($event)"
-       placeholder="type state"/>
+    <div class="textSelector">
+        <input [(ngModel)]="value"
+        (keydown)="onKeyDown($event)"
+        (keyup)="onKeyUp($event)"
+        placeholder="{{placeHolder}}"/>
+        <div class="arrow"></div>
+    </div>
     <div class="list" #divList [style.width.px]="myStyleWidth">
         <ul>
             <ng-template ngFor let-item let-i="index" [ngForOf]="filteredList">
